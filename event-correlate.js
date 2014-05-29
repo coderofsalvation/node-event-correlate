@@ -1,27 +1,14 @@
-var db = require("./db");
 var Event = require("./event");
-
-//db.users.save({email: "srirangan@gmail.com", password: "iLoveMongo", sex: "male"}, function(err, saved) {
-//    if( err || !saved ) console.log("User not saved");
-//      else console.log("User saved");
-//});
-//
-//// app.js
-//db.users.find({sex: "male"}, function(err, users) {
-//  if( err || !users) console.log("No female users found");
-//  else users.forEach( function(femaleUser) {
-//    console.log(femaleUser);
-//  } );
-//});
-
 var method = EventCorrelate.prototype;
 
 function EventCorrelate(){
-  var f = new Event("single",1,2,3);
   this.load("action");
   this.load("event");
   this.load("promise");
+  this.event = Event;
+  this.event.init(this);
   this.config = {};
+  this.callbacks = {};
 }
 
 // Load configurations in conf.d/*
@@ -30,7 +17,7 @@ method.load =  function(type){
     if (file.match(/.+\.js/g) !== null) {
       var name = file.replace('.js', '');
       exports[name]   = require('./'+type+'/' + file);
-      console.log("loading "+type+"/"+file);
+      process.env.DEBUG && console.log("loading "+type+"/"+file);
     }
   });
 }
@@ -40,12 +27,23 @@ method.init = function( config ){
   this.config = config;
 }
 
+method.getActions = function(actions){
+  var actionsObj = [];
+  this.trigger("storage_set", {"event":"flop"} );
+  for( a in actions ){
+    var actiondata = actions[a];
+    process.env.DEBUG && console.log("creating action "+actiondata.type);
+    actionsObj.push( new exports[ actiondata.type ](this) );
+  }
+  return actionsObj;
+}
+
 method.getEvents = function(){
   var events = {};
   for( event in this.config.events ){
-    console.log("creating event "+event);
+    process.env.DEBUG && console.log("creating event "+event);
     var eventdata = this.config.events[event];
-    events[event] = new exports[ eventdata.type ](eventdata,this);
+    events[event] = new exports[ eventdata.type ](event,eventdata,this);
   }
   return events;
 }
@@ -54,8 +52,8 @@ method.getPromises = function(promises){
   var promisesObj = [];
   for( promise in promises ){
     var thepromise = promises[promise];
-    console.log("creating promise "+thepromise.type);
-    promisesObj.push( new exports[ thepromise.type ]( thepromise.data ) );
+    process.env.DEBUG && console.log("creating promise "+thepromise.type);
+    promisesObj.push( new exports[ thepromise.type ]( thepromise.data, this ) );
   }
   return promisesObj;
 }
@@ -63,7 +61,21 @@ method.getPromises = function(promises){
 method.process = function( input ){
   console.log("processing '"+input+"'");
   var events = this.getEvents();
-  for( event in events ) events[event].process(input);
+  for( event in events ) 
+    if( events[event].process(input) )
+      this.event.doActions( event, events[event].config.action );
+}
+
+method.on = function(event,callback){
+  if( this.callbacks[event] == undefined ) this.callbacks[event] = [];
+  this.callbacks[event].push(callback);
+}
+
+method.trigger = function(event,data){
+  process.env.DEBUG && console.log("=> event triggered: "+event); 
+  if( this.callbacks[event] != undefined )
+    for( cb in this.callbacks[event] ) 
+      this.callbacks[event][cb](data);
 }
 
 module.exports = EventCorrelate;

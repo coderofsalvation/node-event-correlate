@@ -1,26 +1,24 @@
-var method = Event.prototype;
 
-function Event(type,patterntype,pattern,action,options){
-  this.type = type;
-  this.patterntype = patterntype;
-  this.pattern = pattern;
-  this.action = action;
-  for( option in options ) this[option] = options[option];
-  if( !this.validate() ) throw new Error("not validated");
+module.exports.init = function(engine){
+  this.engine = engine;
 }
 
-method.getTypes = function(){
-  return ["single"];
+module.exports.process = function (input, list, callback ){
+  list.current.process( input, list.next(), callback );
 }
 
-method.getActions = function(){
-  // *TODO*
-  // iterate over dir (see bullmq) with possible actions
+module.exports.summarizeEvent = function(promises){
+  var str = [];
+  for( p in promises ) str.push( promises[p].toString() );
+  return "gets triggered when "+ str.join(" and ");
 }
 
-method.validate = function(){
-  var types = this.getTypes();
-  return types.indexOf(this.type) > -1;
+module.exports.doActions = function(event,config){
+  var actions = this.engine.getActions(config);
+  this.engine.trigger("event_succes");
+  for( a in actions ){
+    this.engine.trigger("action_"+actions[a].name);
+    if( actions[a].process != undefined ) actions[a].process();
+    else throw "action "+a+" has no process() function";
+  }
 }
-
-module.exports = Event;

@@ -2,7 +2,7 @@
 var method = event.prototype;
 
 function event(){
-  console.log("created event");
+  this.name = "event";
 }
 
 module.exports = event;

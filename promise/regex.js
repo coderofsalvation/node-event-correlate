@@ -6,8 +6,12 @@ function regex(config){
 }
 
 method.process = function(input){
-  console.log("matching regex: "+this.config.pattern);
-  return String(input).match( new RegExp(this.config.pattern,"gi") );
+  match =  String(input).match( new RegExp(this.config.pattern,"gi") );
+  return this.config.continue ? match : !match;
+}
+
+method.toString = function(){
+  return "'"+this.config.pattern+"' is "+ (this.config.continue?"":"not") +" mentioned";
 }
 
 module.exports = regex;

@@ -2,7 +2,11 @@
 var method = ignore.prototype;
 
 function ignore(){
-  console.log("created ignore");
+  this.name = "ignore";
+}
+
+method.ignore = function(){
+  return false; // nothing more to say here :)
 }
 
 module.exports = ignore;

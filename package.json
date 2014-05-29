@@ -11,7 +11,9 @@
     "url": "http://git."
   },
   "dependencies":{
-    "mongojs":"latest"
+    "mongojs":"latest",
+    "linkedlist":"latest",
+    "date.js":"latest"
   },
   "keywords": [
     "event",
