@@ -33,7 +33,9 @@ var method = pastevent.prototype;
 
 function pastevent(config,engine){
   this.config = config;
+  this.name   = "pastevent";
   this.engine = engine;
+  this.succes = false;
   if( config.event == undefined ) throw new Exception("PROMISE_DATA_INCOMPLETE");
 }
 
@@ -42,12 +44,14 @@ method.onStorageGet = function(data){
   return true;
 }
 
-method.process = function(input){
-  this.engine.trigger("storage_get", {"event":this.config.event,"callback":this.onStorageGet} );
+method.process = function(input,callback){
+  //this.engine.trigger("storage_get", {"event":this.config.event},"callback":this.onStorageGet} );
   console.log("check whether pastevent "+this.config.event+" happened "+this.config.when);
-  return true;
-  console.log( date(this.config.when) );
-  console.log( Date() );
+//  return true;
+//  console.log( date(this.config.when) );
+//  console.log( Date() );
+  //callback(false);
+  callback( this.succes = true );
 }
 
 method.toString = function(){

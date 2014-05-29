@@ -12,7 +12,7 @@
   },
   "dependencies":{
     "mongojs":"latest",
-    "linkedlist":"latest",
+    "foreachasync":"latest",
     "date.js":"latest"
   },
   "keywords": [

@@ -62,8 +62,10 @@ method.process = function( input ){
   console.log("processing '"+input+"'");
   var events = this.getEvents();
   for( event in events ) 
-    if( events[event].process(input) )
-      this.event.doActions( event, events[event].config.action );
+    events[event].process( events[event], input, function(succes,event){
+      console.log( "succes "+succes);
+      //events[event].doActions( event );
+    });
 }
 
 method.on = function(event,callback){

@@ -30,12 +30,9 @@ ec.init({
   }
 });
 
-ec.on("storage_get", function(data){
+ec.on("storage_get", function(result){
   console.log("getting events");
-  //db.events.find({userid:userid}, function(err, events) {
   //  data.callback(events);
-  //});
-  //db.close();
 });
 
 ec.on("storage_set", function(data){
