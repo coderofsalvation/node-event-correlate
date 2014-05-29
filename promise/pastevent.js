@@ -27,7 +27,8 @@
 //   tuesday at 9
 //   tomorrow at 15
 
-var date = require("date.js");
+var humandate = require("date.js");
+require("date");
 
 var method = pastevent.prototype;
 
@@ -45,13 +46,18 @@ method.onStorageGet = function(data){
 }
 
 method.process = function(input,callback){
-  //this.engine.trigger("storage_get", {"event":this.config.event},"callback":this.onStorageGet} );
   console.log("check whether pastevent "+this.config.event+" happened "+this.config.when);
-//  return true;
-//  console.log( date(this.config.when) );
-//  console.log( Date() );
-  //callback(false);
-  callback( this.succes = true );
+  data = {
+    search: {"name":this.config.event },
+    context: this
+  }
+  this.engine.trigger("storage_get", data, function(result){
+    var treshold = new Date( humandate( data.context.config.window ) ).getTime();
+    var last     = new Date(result[0].date).getTime();
+    process.env.DEBUG && console.log("treshold: "+treshold);
+    process.env.DEBUG && console.log("last    : "+last);
+    callback( true ) ;//(data.context.config.type == "before" ? (last<treshold) : (treshold>last)) );
+  });
 }
 
 method.toString = function(){

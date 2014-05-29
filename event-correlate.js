@@ -74,11 +74,11 @@ method.on = function(event,callback){
   this.callbacks[event].push(callback);
 }
 
-method.trigger = function(event,data){
+method.trigger = function(event,data,callback){
   process.env.DEBUG && console.log("=> event triggered: "+event); 
   if( this.callbacks[event] != undefined )
     for( cb in this.callbacks[event] ) 
-      this.callbacks[event][cb](data);
+      this.callbacks[event][cb](data,callback);
 }
 
 module.exports = EventCorrelate;

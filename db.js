@@ -1,4 +1,4 @@
-var databaseURI = "localhost:27017/somedb";
+var databaseURI = "localhost:27017/somedb2";
 var collections = ["events"];
 var db = require("mongojs").connect(databaseURI, collections);
 

@@ -11,9 +11,10 @@ ec.init({
       promises: [{
         type: "pastevent",
         data: {
-          event: "BAR",
+          event: "FOO",
           happened: true,
-          when: "1 year ago from now"
+          window: "1 year ago from now",
+          type: "before"
         }
       },{
         type: "regex",
@@ -30,13 +31,29 @@ ec.init({
   }
 });
 
-ec.on("storage_get", function(result){
-  console.log("getting events");
-  //  data.callback(events);
+ec.on("storage_get", function(data,callback){
+  console.log("getting data: ");
+  console.log(data.search);
+  db.events.find( data.search, function(err, events) {
+    //if( events && events.length > 1 ) throw "duplicate events in db *FIXME* syslog";
+    callback(events);
+    db.close();
+  });
 });
 
-ec.on("storage_set", function(data){
- // db.events.save( {userid:userid,data:data} );
+// whenever an event was triggered lets remember it (to enable correlation)
+ec.on("event_succes", function(data,key){
+  var event = {};
+  event.userid = userid;
+  event.name = data.name;
+  event.date = Date();
+  console.log("saving :");
+  console.log(event);
+  db.events.find( data, function(err, events) {
+    if( events ) db.events.update({name:event.name}, event );
+    else db.events.save(data);
+    db.close();
+  });
 });
 
 ec.process("hello world", function(){

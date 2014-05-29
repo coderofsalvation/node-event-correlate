@@ -13,7 +13,8 @@
   "dependencies":{
     "mongojs":"latest",
     "foreachasync":"latest",
-    "date.js":"latest"
+    "date.js":"latest",
+    "date":"latest"
   },
   "keywords": [
     "event",
