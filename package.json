@@ -1,0 +1,22 @@
+{
+  "name": "event-correlate",
+  "version": "0.0.0",
+  "description": "correlates events",
+  "main": "event-correlate.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "http://git."
+  },
+  "dependencies":{
+    "mongojs":"latest"
+  },
+  "keywords": [
+    "event",
+    "correlation"
+  ],
+  "author": "Coder of Salvation",
+  "license": "BSD"
+}
