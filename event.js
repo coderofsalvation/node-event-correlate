@@ -24,7 +24,7 @@ module.exports.promisesSatisfied = function(event, input,promises,callback){
 }
 
 module.exports.doActions = function(event,config){
-  var actions = this.engine.getActions(config);
+  var actions = this.engine.getActions( event.config.action );
   this.engine.trigger("event_succes");
   for( a in actions ){
     this.engine.trigger("action_"+actions[a].name);

@@ -63,8 +63,9 @@ method.process = function( input ){
   var events = this.getEvents();
   for( event in events ) 
     events[event].process( events[event], input, function(succes,event){
-      console.log( "succes "+succes);
-      //events[event].doActions( event );
+      console.log( (succes ? "✔ " : "✖ " ) + (succes?"":"not ") +"all promised were satisfied");
+      if( succes ) event.engine.event.doActions( event );
+      else console.log("no actions because of failed promise");
     });
 }
 
